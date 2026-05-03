@@ -1,0 +1,8 @@
+# Paths
+data_root: "./data"
+
+# Embedding Settings
+emb_provider: "sbert"  
+emb_model: "sentence-transformers/all-MiniLM-L6-v2"
+normalize_embeddings: true
+

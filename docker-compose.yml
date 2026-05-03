@@ -2,7 +2,7 @@ version: "3.9"
 
 services:
   postgres:
-    image: postgres:15
+    image: ankane/pgvector
     container_name: postgres_db
     restart: always
     environment:

@@ -23,7 +23,7 @@ def store_chunks_in_db(chunks):
 
     insert_query = """
     INSERT INTO document_chunks (
-        chunk_id, doc_id, page_number, title, text, strategy, chunk_index, token_count, hash
+        chunk_id, title, page_number, text, strategy, chunk_index, token_count, hash
     ) VALUES %s
     ON CONFLICT (hash) DO NOTHING;
     """
@@ -31,9 +31,8 @@ def store_chunks_in_db(chunks):
     values = [
         (
             c["chunk_id"],
-            c.get("doc_id", "unknown_doc"),
-            c.get("page_number"),
             c.get("title"),
+            c.get("page_number"),
             c["text"],
             c["strategy"],
             c.get("chunk_index"),

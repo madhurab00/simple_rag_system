@@ -1,11 +1,16 @@
 import os
+import sys
+from pathlib import Path
 import numpy as np
 import psycopg2
 from psycopg2.extras import RealDictCursor
 from dotenv import load_dotenv
 from typing import Dict, Any
-load_dotenv()  
+
+sys.path.append(str(Path(__file__).resolve().parent.parent.parent))
 from src.utils import load_config
+
+load_dotenv() 
 
 def fetch_chunks(limit: int = None)->list[Dict[str,Any]]:
     conn = psycopg2.connect(
@@ -49,7 +54,7 @@ def _get_embedding_model(config: Dict[str, Any]):
         return OpenAIEmbeddings(model=model_name)
     
     elif provider == "sbert":
-        from langchain_community.embeddings import HuggingFaceEmbeddings
+        from langchain_huggingface import HuggingFaceEmbeddings
         model_kwargs = {"device": "cpu"} #cuda or mps
         
         if config.get("normalize_embeddings", True):

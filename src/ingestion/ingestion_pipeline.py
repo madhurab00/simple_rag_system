@@ -1,5 +1,7 @@
 from pathlib import Path
+import sys
 
+sys.path.append(str(Path(__file__).resolve().parent.parent.parent))
 from src.ingestion.ingest import extract_text_from_pdf
 from src.ingestion.chunk import chunk_text
 from src.ingestion.store import store_chunks_in_db

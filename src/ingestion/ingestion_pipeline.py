@@ -7,6 +7,7 @@ sys.path.append(str(Path(__file__).resolve().parent.parent.parent))
 from src.ingestion.ingest import extract_text_from_pdf
 from src.ingestion.chunk import chunk_text
 from src.ingestion.store import store_chunks_in_db
+from src.ingestion.document_store import generate_document_hash,store_document_metadata,document_exists
 from src.utils import load_config
 
 # Logger setup
@@ -17,7 +18,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-def ingest_document(file_path: str, method: str = "fixed"):
+def ingest_document(file_path: str, method: str = "overlap"):
     """Run full document ingestion pipeline.
 
     This pipeline performs three main steps:
@@ -43,8 +44,19 @@ def ingest_document(file_path: str, method: str = "fixed"):
     logger.info(f"Step 2: Chunking text using method: {method}")
     chunks = chunk_text(documents, method)
 
-    # Step 3: Storage
-    logger.info("Step 3: Storing chunks in PostgreSQL")
+    # Step 3.a: Document Storage
+    logger.info("Step 3.a: Storing documents in PostgreSQL")
+    full_text = " ".join(
+                            doc["content"]
+                            for doc in documents
+                        )
+    hashed_document = generate_document_hash(full_text)
+    if not document_exists(hashed_document):
+        store_document_metadata(pdf_path,hashed_document)
+    else:
+        logger.info("Document already exists in db")
+
+    logger.info("Step 3.b: Storing chunks in PostgreSQL")
     store_chunks_in_db(chunks)
 
     logger.info(f"Ingestion completed successfully: {file_path}")

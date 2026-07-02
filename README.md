@@ -79,4 +79,4 @@ CREATE TABLE document_chunks (
           │   Storage     │
           │ (PostgreSQL   │
           │  via Docker)  │
-          └───────────────┘
+          
